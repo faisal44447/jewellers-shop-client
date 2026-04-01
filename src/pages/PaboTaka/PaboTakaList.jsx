@@ -1,12 +1,22 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const PaboTakaList = () => {
     const [list, setList] = useState([]);
+    const axiosSecure = useAxiosSecure();
+
+    // ✅ correct function
+    const fetchPabo = async () => {
+        try {
+            const res = await axiosSecure.get("/receivables");
+            setList(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     useEffect(() => {
-        axios.get("http://localhost:5000/receivables")
-            .then(res => setList(res.data));
+        fetchPabo(); // ✅ correct name
     }, []);
 
     return (
@@ -14,7 +24,7 @@ const PaboTakaList = () => {
             <h2 className="text-2xl font-bold mb-4">📋 Pabo Taka List</h2>
 
             <div className="overflow-x-auto">
-                <table className="table">
+                <table className="table table-xs">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -25,16 +35,26 @@ const PaboTakaList = () => {
                     </thead>
 
                     <tbody>
-                        {list.map((item, index) => (
-                            <tr key={item._id}>
-                                <th>{index + 1}</th>
-                                <td>{item.name}</td>
-                                <td>৳ {item.amount}</td>
-                                <td>
-                                    {new Date(item.createdAt).toLocaleString()}
+                        {list.length === 0 ? (
+                            <tr>
+                                <td colSpan="4" className="text-center">
+                                    ❌ No Data Found
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            list.map((item, index) => (
+                                <tr key={item._id}>
+                                    <th>{index + 1}</th>
+                                    <td>{item.name}</td>
+                                    <td>৳ {item.amount}</td>
+                                    <td>
+                                        {item.createdAt
+                                            ? new Date(item.createdAt).toLocaleString()
+                                            : "No date"}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>
@@ -42,4 +62,4 @@ const PaboTakaList = () => {
     );
 };
 
-export default PaboTakaList;
+export default PaboTakaList; 

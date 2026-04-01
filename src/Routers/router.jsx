@@ -21,6 +21,8 @@ import PaboTaka from "../pages/PaboTaka/PaboTaka";
 import ProductCard from "../pages/ProductCard/ProductCard";
 import ProductCardPage from "../pages/ProductCardPage/ProductCardPage";
 import PaboTakaList from "../pages/PaboTaka/PaboTakaList";
+import ExpenseList from "../pages/ExpenseList/ExpenseList";
+import HowladList from "../pages/HowladNewa/HowladList";
 
 const router = createBrowserRouter([
     {
@@ -73,12 +75,20 @@ const router = createBrowserRouter([
                 element: <ProductCardPage></ProductCardPage>
             },
             {
+                path: "/expenses-list",
+                element: <ExpenseList />
+            },
+            {
                 path: "/pabo-list",
                 element: <PaboTakaList />
             },
             {
                 path: "paboTaka",
                 element: <PaboTaka></PaboTaka>
+            },
+            {
+                path: "/howlad-list",
+                element: <HowladList />
             },
             {
                 path: "howlad",

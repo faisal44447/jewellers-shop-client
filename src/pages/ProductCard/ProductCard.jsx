@@ -34,6 +34,14 @@ const ProductCard = ({ product }) => {
                     {product?.name}
                     <div className="badge badge-secondary">BUY</div>
                 </h2>
+                <div className="flex justify-between">
+                    <p>
+                          {product.vori}v {product.ana}a {product.rati}r {product.point}p
+                    </p>
+                    <p>
+                        {product.karat}
+                    </p>
+                </div>
 
                 {/* PRICE */}
                 <p>Buy: ৳{product?.buyPrice}</p>
@@ -49,7 +57,7 @@ const ProductCard = ({ product }) => {
                 <div className="card-actions justify-end">
                     <button
                         onClick={handleAddToCart}
-                        className="btn btn-success"
+                        className="btn btn-success w-full "
                     >
                         Add to Cart
                     </button>

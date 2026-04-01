@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Chart from "../../components/Chart/Chart";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
@@ -25,21 +24,21 @@ const Dashboard = () => {
             </div>
 
             <div className="card bg-green-100 p-4">
-                <h2>Sales</h2>
+                <h2>নগদ টাকা</h2>
                 <p className="text-xl font-bold">৳{data.totalSales || 0}</p>
             </div>
 
             <div className="card bg-red-100 p-4">
-                <h2>Expense</h2>
+                <h2>খরচ</h2>
                 <p className="text-xl font-bold">৳{data.totalExpense || 0}</p>
             </div>
 
             <div className="card bg-yellow-100 p-4">
-                <h2>Profit</h2>
+                <h2>মোট টাকা</h2>
                 <p className="text-xl font-bold">৳{data.profit || 0}</p>
             </div>
             <div className="card bg-yellow-100 p-4">
-                <h2>Pabo Taka</h2>
+                <h2>টাকা পাবো</h2>
                 <p className="text-xl font-bold">৳{data.takaPabo || 0}</p>
 
                 <Link to="/pabo-list" className="btn btn-sm mt-2">
@@ -47,16 +46,21 @@ const Dashboard = () => {
                 </Link>
             </div>
             <div className="card bg-yellow-100 p-4">
-                <h2>Howlad Nise</h2>
+                <h2>ধার নেওয়া</h2>
                 <p className="text-xl font-bold">৳{data.howladNise || 0}</p>
+
+                <Link to="/howlad-list" className="btn btn-sm mt-2">
+                    View Details
+                </Link>
             </div>
 
             <div className="card bg-yellow-100 p-4">
-                <h2>Howlad Dise</h2>
+                <h2>ধার শোধ করা</h2>
                 <p className="text-xl font-bold">৳{data.howladDise || 0}</p>
-            </div>
-            <div className="p-5">
-                <Chart />
+
+                <Link to="/howlad-list" className="btn btn-sm mt-2">
+                    View Details
+                </Link>
             </div>
         </div>
     );
