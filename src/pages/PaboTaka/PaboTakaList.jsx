@@ -19,6 +19,29 @@ const PaboTakaList = () => {
         fetchPabo(); // ✅ correct name
     }, []);
 
+    const handleDelete = async (id) => {
+        const confirm = window.confirm("Delete this item?");
+
+        if (confirm) {
+            await axiosSecure.delete(`/receivables/${id}`);
+            fetchPabo();
+        }
+    };
+
+    const handleEdit = async (item) => {
+        const name = prompt("Edit Name", item.name);
+        const amount = prompt("Edit Amount", item.amount);
+
+        if (name && amount) {
+            await axiosSecure.patch(`/receivables/${item._id}`, {
+                name,
+                amount
+            });
+
+            fetchPabo();
+        }
+    };
+
     return (
         <div className="p-5">
             <h2 className="text-2xl font-bold mb-4">📋 Pabo Taka List</h2>
@@ -31,6 +54,7 @@ const PaboTakaList = () => {
                             <th>Name</th>
                             <th>Amount</th>
                             <th>Date & Time</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
 
@@ -51,6 +75,20 @@ const PaboTakaList = () => {
                                         {item.createdAt
                                             ? new Date(item.createdAt).toLocaleString()
                                             : "No date"}
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={() => handleEdit(item)}
+                                            className="btn btn-xs btn-warning ml-2"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(item._id)}
+                                            className="btn btn-xs btn-error"
+                                        >
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))

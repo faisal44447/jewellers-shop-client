@@ -23,6 +23,7 @@ import ProductCardPage from "../pages/ProductCardPage/ProductCardPage";
 import PaboTakaList from "../pages/PaboTaka/PaboTakaList";
 import ExpenseList from "../pages/ExpenseList/ExpenseList";
 import HowladList from "../pages/HowladNewa/HowladList";
+import Sales from "../pages/Sales/Sales";
 
 const router = createBrowserRouter([
     {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
             {
                 path: "cart",
                 element: <Cart />
+            },
+            {
+                path: "/sales",
+                element: <Sales />
             },
             {
                 path: "productCard",

@@ -3,7 +3,6 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import axios from "axios";
 
 const ManageProduct = () => {
     const [products, setProducts] = useState([]);
@@ -12,16 +11,24 @@ const ManageProduct = () => {
 
     const axiosSecure = useAxiosSecure();
 
-    // ✅ LOAD PRODUCTS
+    // ================= PRODUCTS =================
     const fetchProducts = async () => {
-        const res = await axiosSecure.get("/products");
-        setProducts(res.data);
+        try {
+            const res = await axiosSecure.get("/products");
+            setProducts(res.data);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
-    // ✅ LOAD PABO TAKA
+    // ================= PABO =================
     const fetchPabo = async () => {
-        const res = await axios.get("http://localhost:5000/receivables");
-        setPaboList(res.data);
+        try {
+            const res = await axiosSecure.get("/receivables");
+            setPaboList(res.data);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     useEffect(() => {
@@ -29,11 +36,11 @@ const ManageProduct = () => {
         fetchPabo();
     }, []);
 
-    // ✅ DELETE PRODUCT
+    // ================= DELETE PRODUCT =================
     const handleDeleteProduct = (item) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "This product will be deleted!",
+            title: "Delete Product?",
+            text: "This will be removed!",
             icon: "warning",
             showCancelButton: true,
         }).then(async (result) => {
@@ -45,20 +52,49 @@ const ManageProduct = () => {
         });
     };
 
-    // ✅ DELETE PABO TAKA
+    // ================= DELETE PABO =================
     const handleDeletePabo = (id) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "This data will be deleted!",
+            title: "Delete?",
+            text: "This will be removed!",
             icon: "warning",
             showCancelButton: true,
         }).then(async (result) => {
             if (result.isConfirmed) {
-                await axios.delete(`http://localhost:5000/receivables/${id}`);
+                await axiosSecure.delete(`/receivables/${id}`);
                 fetchPabo();
-                Swal.fire("Deleted!", "Removed", "success");
+                Swal.fire("Deleted!", "Removed successfully", "success");
             }
         });
+    };
+
+    // ================= EDIT PABO =================
+    const handleEditPabo = async (item) => {
+        const { value: formValues } = await Swal.fire({
+            title: "Edit Pabo",
+            html: `
+                <input id="name" class="swal2-input" placeholder="Name" value="${item.name}">
+                <input id="amount" class="swal2-input" placeholder="Amount" value="${item.amount}">
+            `,
+            focusConfirm: false,
+            preConfirm: () => {
+                return {
+                    name: document.getElementById("name").value,
+                    amount: document.getElementById("amount").value
+                };
+            }
+        });
+
+        if (formValues) {
+            await axiosSecure.patch(`/receivables/${item._id}`, {
+                name: formValues.name,
+                amount: Number(formValues.amount)
+            });
+
+            fetchPabo();
+
+            Swal.fire("Updated!", "Data updated successfully", "success");
+        }
     };
 
     return (
@@ -79,17 +115,36 @@ const ManageProduct = () => {
                 >
                     💰 Pabo Taka
                 </button>
+                <button className="btn btn-info">
+                    <Link to="/expenses-list">
+                        📋 Expenses
+                    </Link>
+                </button>
             </div>
 
             {/* ================= PRODUCTS TABLE ================= */}
             {tab === "products" && (
                 <>
-                    <div className="flex justify-between mb-6">
+                    <div className="flex justify-between mb-6 flex-wrap gap-3">
                         <h2 className="text-3xl font-bold">Manage Products</h2>
 
-                        <Link to="/add-product">
-                            <button className="btn btn-primary">➕ Add Product</button>
-                        </Link>
+                        <div className="flex gap-3 flex-wrap">
+                            <Link to="/add-product">
+                                <button className="btn btn-primary">➕ Add Product</button>
+                            </Link>
+
+                            <Link to="/howlad">
+                                <button className="btn btn-secondary">➕ Howlad</button>
+                            </Link>
+
+                            <Link to="/paboTaka">
+                                <button className="btn btn-accent">➕ Pabo Tk</button>
+                            </Link>
+                            <Link to="/expenses">
+                                <button className="btn btn-accent">➕Expenses</button>
+                            </Link>
+
+                        </div>
                     </div>
 
                     <div className="overflow-x-auto">
@@ -102,8 +157,7 @@ const ManageProduct = () => {
                                     <th>Karat</th>
                                     <th>Weight</th>
                                     <th>Buy Price</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
 
@@ -115,7 +169,7 @@ const ManageProduct = () => {
                                         <td>
                                             <img
                                                 src={item.image || "https://picsum.photos/200"}
-                                                className="w-12 h-12 rounded"
+                                                className="w-12 h-12 object-cover rounded"
                                             />
                                         </td>
 
@@ -129,20 +183,24 @@ const ManageProduct = () => {
                                         <td>৳{item.buyPrice}</td>
 
                                         <td>
-                                            <Link to={`/edit/${item._id}`}>
-                                                <button className="btn btn-warning btn-sm">
-                                                    <FaEdit />
-                                                </button>
-                                            </Link>
-                                        </td>
+                                            <div className="flex gap-2">
 
-                                        <td>
-                                            <button
-                                                onClick={() => handleDeleteProduct(item)}
-                                                className="btn btn-ghost"
-                                            >
-                                                <FaTrashAlt className="text-red-600" />
-                                            </button>
+                                                {/* EDIT */}
+                                                <Link to={`/edit/${item._id}`}>
+                                                    <button className="btn btn-warning btn-xs">
+                                                        <FaEdit />
+                                                    </button>
+                                                </Link>
+
+                                                {/* DELETE */}
+                                                <button
+                                                    onClick={() => handleDeleteProduct(item)}
+                                                    className="btn btn-error btn-xs"
+                                                >
+                                                    <FaTrashAlt />
+                                                </button>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -152,7 +210,7 @@ const ManageProduct = () => {
                 </>
             )}
 
-            {/* ================= PABO TAKA TABLE ================= */}
+            {/* ================= PABO TABLE ================= */}
             {tab === "pabo" && (
                 <>
                     <h2 className="text-3xl font-bold mb-5">
@@ -161,14 +219,13 @@ const ManageProduct = () => {
 
                     <div className="overflow-x-auto">
                         <table className="table w-full">
-
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
                                     <th>Amount</th>
                                     <th>Date</th>
-                                    <th>Delete</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
 
@@ -178,17 +235,33 @@ const ManageProduct = () => {
                                         <td>{index + 1}</td>
                                         <td>{item.name}</td>
                                         <td>৳ {item.amount}</td>
+
                                         <td>
-                                            {new Date(item.createdAt).toLocaleString()}
+                                            {item.createdAt
+                                                ? new Date(item.createdAt).toLocaleString()
+                                                : "No date"}
                                         </td>
 
                                         <td>
-                                            <button
-                                                onClick={() => handleDeletePabo(item._id)}
-                                                className="btn btn-ghost"
-                                            >
-                                                ❌
-                                            </button>
+                                            <div className="flex gap-2">
+
+                                                {/* EDIT */}
+                                                <button
+                                                    onClick={() => handleEditPabo(item)}
+                                                    className="btn btn-warning btn-xs"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+
+                                                {/* DELETE */}
+                                                <button
+                                                    onClick={() => handleDeletePabo(item._id)}
+                                                    className="btn btn-error btn-xs"
+                                                >
+                                                    <FaTrashAlt />
+                                                </button>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

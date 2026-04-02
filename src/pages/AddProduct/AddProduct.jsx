@@ -16,6 +16,9 @@ const AddProduct = () => {
 
     const onSubmit = async (data) => {
         try {
+            // ✅ combine date + time
+            const fullDateTime = new Date(`${data.date}T${data.time}`);
+
             // 🔥 image upload
             const imageFile = { image: data.image[0] };
 
@@ -35,7 +38,10 @@ const AddProduct = () => {
                     rati: Number(data.rati || 0),
                     point: Number(data.point || 0),
                     buyPrice: Number(data.buyPrice || 0),
-                    image: res.data.data.display_url
+                    image: res.data.data.display_url,
+
+                    // ✅ NEW FIELD
+                    createdAt: fullDateTime
                 };
 
                 const productRes = await axiosSecure.post("/products", productData);
@@ -43,10 +49,11 @@ const AddProduct = () => {
                 if (productRes.data.insertedId) {
                     reset();
 
+                    // 🔥 সুন্দর SweetAlert
                     Swal.fire({
-                        position: "top-end",
                         icon: "success",
-                        title: `${data.name} added successfully`,
+                        title: "✅ Product Added!",
+                        text: `${data.name} successfully added`,
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -55,7 +62,12 @@ const AddProduct = () => {
 
         } catch (error) {
             console.log(error);
-            Swal.fire("Error", "Failed to add product", "error");
+
+            Swal.fire({
+                icon: "error",
+                title: "❌ Error",
+                text: "Failed to add product"
+            });
         }
     };
 
@@ -79,7 +91,7 @@ const AddProduct = () => {
                     className="input input-bordered w-full"
                 />
 
-                {/* VORI SYSTEM */}
+                {/* VORI */}
                 <div className="grid grid-cols-4 gap-2">
                     <input {...register("vori")} placeholder="Vori" className="input input-bordered" />
                     <input {...register("ana")} placeholder="Ana" className="input input-bordered" />
@@ -92,6 +104,20 @@ const AddProduct = () => {
                     type="number"
                     {...register("buyPrice", { required: true })}
                     placeholder="Buy Price"
+                    className="input input-bordered w-full"
+                />
+
+                {/* ✅ DATE */}
+                <input
+                    type="date"
+                    {...register("date", { required: true })}
+                    className="input input-bordered w-full"
+                />
+
+                {/* ✅ TIME */}
+                <input
+                    type="time"
+                    {...register("time", { required: true })}
                     className="input input-bordered w-full"
                 />
 

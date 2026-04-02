@@ -2,7 +2,13 @@ import { useState } from "react";
 import axios from "axios";
 
 const Expenses = () => {
-    const [form, setForm] = useState({});
+    const [form, setForm] = useState({
+        title: "",
+        amount: "",
+        category: "",
+        date: "",
+        time: ""
+    });
 
     const handleChange = e => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -11,20 +17,74 @@ const Expenses = () => {
     const handleSubmit = e => {
         e.preventDefault();
 
+        // 🔥 date + time combine
+        const fullDateTime = new Date(`${form.date}T${form.time}`);
+
         axios.post("http://localhost:5000/expenses", {
             ...form,
             amount: Number(form.amount),
-            date: new Date()
+            createdAt: fullDateTime
         })
-            .then(() => alert("✅ Expense Added"));
+            .then(() => {
+                alert("✅ Expense Added");
+
+                // reset
+                setForm({
+                    title: "",
+                    amount: "",
+                    category: "",
+                    date: "",
+                    time: ""
+                });
+            });
     };
 
     return (
         <form onSubmit={handleSubmit} className="p-5 space-y-3">
-            <input name="title" onChange={handleChange} placeholder="Expense Title" className="input input-bordered w-full" />
-            <input name="amount" onChange={handleChange} placeholder="Amount" className="input input-bordered w-full" />
 
-            <button className="btn btn-error">Add Expense</button>
+            <input
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                placeholder="Expense Title"
+                className="input input-bordered w-full"
+            />
+
+            <input
+                name="amount"
+                value={form.amount}
+                onChange={handleChange}
+                placeholder="Amount"
+                className="input input-bordered w-full"
+            />
+
+            <input
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                placeholder="Category (optional)"
+                className="input input-bordered w-full"
+            />
+
+            {/* ✅ DATE */}
+            <input
+                type="date"
+                name="date"
+                value={form.date}
+                onChange={handleChange}
+                className="input input-bordered w-full"
+            />
+
+            {/* ✅ TIME */}
+            <input
+                type="time"
+                name="time"
+                value={form.time}
+                onChange={handleChange}
+                className="input input-bordered w-full"
+            />
+
+            <button className="btn btn-error w-full">Add Expense</button>
         </form>
     );
 };

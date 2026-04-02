@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const ExpenseList = () => {
     const [list, setList] = useState([]);
@@ -17,12 +18,67 @@ const ExpenseList = () => {
     // ❌ DELETE
     const handleDelete = async (id) => {
         const confirm = await Swal.fire({
-            title: "Delete?",
-            showCancelButton: true
+            title: "Are you sure?",
+            text: "This expense will be deleted!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
         });
 
         if (confirm.isConfirmed) {
             await axios.delete(`http://localhost:5000/expenses/${id}`);
+
+            await Swal.fire({
+                title: "Deleted!",
+                text: "Expense removed",
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            fetchExpenses();
+        }
+    };
+
+    // ✏️ EDIT
+    const handleEdit = async (item) => {
+        const currentDate = item.createdAt
+            ? new Date(item.createdAt).toISOString().slice(0, 16)
+            : "";
+
+        const { value: formValues } = await Swal.fire({
+            title: "✏️ Edit Expense",
+            html:
+                `<input id="title" class="swal2-input" value="${item.title}" placeholder="Title">` +
+                `<input id="amount" class="swal2-input" value="${item.amount}" placeholder="Amount">` +
+                `<input id="date" type="datetime-local" class="swal2-input" value="${currentDate}">`,
+            showCancelButton: true,
+            confirmButtonText: "Update",
+            focusConfirm: false,
+            preConfirm: () => {
+                return {
+                    title: document.getElementById("title").value,
+                    amount: Number(document.getElementById("amount").value),
+                    createdAt: new Date(document.getElementById("date").value)
+                };
+            }
+        });
+
+        if (formValues) {
+            await axios.patch(
+                `http://localhost:5000/expenses/${item._id}`,
+                formValues
+            );
+
+            await Swal.fire({
+                title: "Updated!",
+                text: "Expense updated successfully",
+                icon: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+
             fetchExpenses();
         }
     };
@@ -37,9 +93,9 @@ const ExpenseList = () => {
                         <tr>
                             <th>#</th>
                             <th>Title</th>
-                            <th>Category</th>
                             <th>Amount</th>
-                            <th>Date</th>
+                            <th>Date & Time</th>
+                            <th>Edit</th>
                             <th>Delete</th>
                         </tr>
                     </thead>
@@ -49,23 +105,40 @@ const ExpenseList = () => {
                             <tr key={item._id}>
                                 <th>{i + 1}</th>
                                 <td>{item.title}</td>
-                                <td>{item.category || "N/A"}</td>
                                 <td>৳ {item.amount}</td>
+
                                 <td>
-                                    {new Date(item.date).toLocaleString()}
+                                    {item.createdAt
+                                        ? new Date(item.createdAt).toLocaleString()
+                                        : item.date
+                                            ? new Date(item.date).toLocaleString()
+                                            : "No Date"}
                                 </td>
 
+                                {/* ✏️ EDIT */}
+                                <td>
+                                    <button
+                                        onClick={() => handleEdit(item)}
+                                        className="btn btn-xs btn-warning"
+                                    >
+                                        <FaEdit />
+                                    </button>
+                                </td>
+
+                                {/* ❌ DELETE */}
                                 <td>
                                     <button
                                         onClick={() => handleDelete(item._id)}
                                         className="btn btn-xs btn-error"
                                     >
-                                        Delete
+                                        <FaTrash />
                                     </button>
                                 </td>
+
                             </tr>
                         ))}
                     </tbody>
+
                 </table>
             </div>
         </div>

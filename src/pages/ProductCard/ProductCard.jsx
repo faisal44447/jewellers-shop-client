@@ -1,16 +1,28 @@
 import { useState, useContext } from "react";
 import { CartContext } from "../../providers/CartProvider";
+import Swal from "sweetalert2";
 
 const ProductCard = ({ product }) => {
     const [price, setPrice] = useState("");
     const { addToCart } = useContext(CartContext);
 
+    // ✅ FIX
     if (!product) return null;
 
     const handleAddToCart = () => {
+
         addToCart({
             ...product,
             sellPrice: Number(price || product.buyPrice)
+        });
+
+        // 🔥 SWEET ALERT
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `${product.name} added to cart`,
+            showConfirmButton: false,
+            timer: 1500
         });
     };
 
@@ -22,7 +34,7 @@ const ProductCard = ({ product }) => {
                 <img
                     src={product?.image || "https://picsum.photos/300"}
                     alt={product?.name}
-                    className="h-48 w-full object-cover"
+                    className="h-48 w-full object-contain rounded"
                 />
             </figure>
 
@@ -34,13 +46,12 @@ const ProductCard = ({ product }) => {
                     {product?.name}
                     <div className="badge badge-secondary">BUY</div>
                 </h2>
+
                 <div className="flex justify-between">
                     <p>
-                          {product.vori}v {product.ana}a {product.rati}r {product.point}p
+                        {product.vori}v {product.ana}a {product.rati}r {product.point}p
                     </p>
-                    <p>
-                        {product.karat}
-                    </p>
+                    <p>{product.karat}</p>
                 </div>
 
                 {/* PRICE */}
@@ -57,9 +68,9 @@ const ProductCard = ({ product }) => {
                 <div className="card-actions justify-end">
                     <button
                         onClick={handleAddToCart}
-                        className="btn btn-success w-full "
+                        className="btn btn-success w-full"
                     >
-                        Add to Cart
+                        Sell to Product
                     </button>
                 </div>
 

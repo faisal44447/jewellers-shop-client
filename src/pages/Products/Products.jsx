@@ -54,13 +54,8 @@ const Products = () => {
         <div>
             {/* 🔥 TOP SUMMARY */}
             <div className="flex justify-evenly mb-8">
-                <h2 className="text-3xl">Total Products: {products.length}</h2>
-                <button
-                    onClick={() => navigate("/add-product")}
-                    className="btn btn-primary"
-                >
-                    ➕ Add Product
-                </button>
+                <h2 className="text-4xl text-center font-bold">All Products: {products.length}</h2>
+            
             </div>
 
             {/* 🔥 TABLE */}
@@ -74,7 +69,6 @@ const Products = () => {
                             <th>Karat</th>
                             <th>Weight</th>
                             <th>Buy</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
 
@@ -107,22 +101,7 @@ const Products = () => {
                                     {/* BUY */}
                                     <td>৳{item.buyPrice}</td>
 
-                                    {/* ACTION */}
-                                    <td className="flex gap-2">
-                                        <button
-                                            onClick={() => navigate(`/edit/${item._id}`)}
-                                            className="btn btn-warning btn-sm"
-                                        >
-                                            Edit
-                                        </button>
 
-                                        <button
-                                            onClick={() => handleDelete(item._id)}
-                                            className="btn btn-ghost btn-lg"
-                                        >
-                                            <FaTrashAlt className="text-red-600" />
-                                        </button>
-                                    </td>
                                 </tr>
                             ))
                         }
