@@ -10,13 +10,14 @@ const Contact = () => {
                     📞 Contact Us
                 </h2>
 
-                <p className='text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 tracking-widest'>
-                    +8801706044447
-                </p>
+                <div className='mx-auto px-5 md:px-10'>
+                    <p className='text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 tracking-widest break-words'>
+                        +8801706044447
+                    </p>
+                </div>
 
                 {/* Buttons */}
-                <div className='flex justify-center gap-4 mt-4'>
-
+                <div className='flex flex-col sm:flex-row justify-center gap-4 mt-4'>
                     {/* Call Button */}
                     <a
                         href="tel:+8801706044447"
@@ -34,7 +35,6 @@ const Contact = () => {
                     >
                         💬 WhatsApp
                     </a>
-
                 </div>
 
                 <p className='text-gray-400 text-lg'>

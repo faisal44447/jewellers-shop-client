@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "msjsdiag.debugger-for-chrome",
+        "ms-vsliveshare.vsliveshare-audio",
+        "formulahendry.auto-rename-tag",
+        "njpwerner.autodocstring",
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-vscode.azure-repos",
+        "mgmcdermott.vscode-language-babel",
+        "ms-python.black-formatter",
+        "ms-vscode.cpptools",
+        "ms-vscode.cpp-devtools"
+    ]
+}

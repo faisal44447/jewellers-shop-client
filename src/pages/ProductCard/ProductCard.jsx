@@ -47,15 +47,21 @@ const ProductCard = ({ product }) => {
                     <div className="badge badge-secondary">BUY</div>
                 </h2>
 
+
+
+
+
                 <div className="flex justify-between">
                     <p>
-                        {product.vori}v {product.ana}a {product.rati}r {product.point}p
+                        {product.vori}ভরি {product.ana}আনা {product.rati}রতি {product.point}পয়েন্ট
                     </p>
-                    <p>{product.karat}</p>
                 </div>
 
                 {/* PRICE */}
-                <p>Buy: ৳{product?.buyPrice}</p>
+                <div className="flex justify-between">
+                    <p>Buy: ৳{product?.buyPrice}</p>
+                    <p className="text-yellow-400">{product.karat} ক্যারেট</p>
+                </div>
 
                 {/* INPUT */}
                 <input

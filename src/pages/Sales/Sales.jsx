@@ -6,7 +6,7 @@ const Sales = () => {
     const [sales, setSales] = useState([]);
 
     const fetchSales = async () => {
-        const res = await axios.get("http://localhost:5000/sales");
+        const res = await axios.get("https://jewellers-shop-server.vercel.app/sales");
         setSales(res.data);
     };
 
@@ -26,7 +26,7 @@ const Sales = () => {
 
         if (confirm.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:5000/sales/${id}`);
+                await axios.delete(`https://jewellers-shop-server.vercel.app/sales/${id}`);
 
                 Swal.fire("Deleted!", "Sale has been deleted.", "success");
                 fetchSales();

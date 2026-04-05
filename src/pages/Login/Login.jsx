@@ -1,103 +1,100 @@
-import { useContext, useState } from "react";
-import { AuthContext } from "../../providers/AuthProvider";
+import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { AuthContext } from '../../providers/AuthProvider';
 import SocialLogin from '../../components/SocialLogin/SocialLogin';
 
-const generateCaptcha = () => {
-    return Math.floor(1000 + Math.random() * 9000);
-};
+const generateCaptcha = () => Math.floor(1000 + Math.random() * 9000);
 
 const Login = () => {
     const { signIn } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
-
     const from = location.state?.from?.pathname || "/";
 
     const [captcha, setCaptcha] = useState(generateCaptcha());
     const [input, setInput] = useState("");
+    const [disabled, setDisabled] = useState(true);
 
-    const handleLogin = (e) => {
+    useEffect(() => {
+        // captcha input এর মান পরিবর্তন হলে button enable/disable
+        if (input === String(captcha)) {
+            setDisabled(false);
+        } else {
+            setDisabled(true);
+        }
+    }, [input, captcha]);
+
+    const handleLogin = async (e) => {
         e.preventDefault();
-
         const form = e.target;
         const email = form.email.value;
         const password = form.password.value;
 
-        // ✅ CAPTCHA CHECK
-        if (input != captcha) {
+        if (input !== String(captcha)) {
             Swal.fire("Error!", "Wrong captcha", "error");
-            setCaptcha(generateCaptcha()); // refresh captcha
+            setCaptcha(generateCaptcha());
+            setInput("");
             return;
         }
 
-        // ✅ LOGIN
-        signIn(email, password)
-            .then(async (result) => {
-                const user = result.user;
+        try {
+            const result = await signIn(email, password);
+            const user = result.user;
 
-                // 🔥 backend থেকে token আনো
-                const res = await fetch("http://localhost:5000/jwt", {
-                    method: "POST",
-                    headers: {
-                        "content-type": "application/json"
-                    },
-                    body: JSON.stringify({ email: user.email })
-                });
+            // backend থেকে token
+            const res = await fetch("https://jewellers-shop-server.vercel.app/jwt", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({ email: user.email })
+            });
+            const data = await res.json();
+            localStorage.setItem("access-token", data.token);
 
-                const data = await res.json();
-
-                // 🔥 token save করো
-                localStorage.setItem("access-token", data.token);
-
-                Swal.fire("Success!", "Login successful", "success");
-                navigate(from, { replace: true });
-            })
+            Swal.fire("Success!", "Login successful", "success");
+            navigate(from, { replace: true });
+        } catch (err) {
+            Swal.fire("Error!", err.message, "error");
+        }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen">
-            <div className="card w-96 bg-base-100 shadow-xl p-5">
+        <div className="hero min-h-screen bg-base-200">
+            <div className="hero-content flex-col md:flex-row-reverse">
+                <div className="text-center md:w-1/2 lg:text-left">
+                    <h1 className="text-5xl font-bold">Login now!</h1>
+                    <p className="py-6">
+                        Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi.
+                    </p>
+                </div>
 
-                <h2 className="text-2xl font-bold text-center">Login</h2>
+                <div className="card md:w-1/2 max-w-sm shadow-2xl bg-base-100 p-5">
+                    <form onSubmit={handleLogin} className="card-body space-y-3">
+                        <input type="email" name="email" placeholder="Email" className="input input-bordered w-full" required />
+                        <input type="password" name="password" placeholder="Password" className="input input-bordered w-full" required />
 
-                <form onSubmit={handleLogin} className="space-y-3 mt-4">
+                        <div>
+                            <p className="font-bold">Captcha: {captcha}</p>
+                            <input
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder="Enter captcha"
+                                className="input input-bordered w-full mt-2"
+                                required
+                            />
+                        </div>
 
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        className="input input-bordered w-full"
-                    />
+                        <button disabled={disabled} className="btn btn-primary w-full">
+                            Login
+                        </button>
+                    </form>
 
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        className="input input-bordered w-full"
-                    />
+                    <p className="text-center mt-3">
+                        New here? <Link to="/signup" className="text-blue-500">Signup</Link>
+                    </p>
 
-                    {/* 🔥 CAPTCHA */}
-                    <div>
-                        <p className="font-bold">Captcha: {captcha}</p>
-                        <input
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            placeholder="Enter captcha"
-                            className="input input-bordered w-full mt-2"
-                        />
-                    </div>
-
-                    <button className="btn btn-primary w-full">
-                        Login
-                    </button>
-                </form>
-
-                <p className="text-center mt-3">
-                    New here? <Link to="/signup" className="text-blue-500">Signup</Link>
-                </p>
-                <SocialLogin></SocialLogin>
+                    <SocialLogin />
+                </div>
             </div>
         </div>
     );

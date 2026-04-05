@@ -20,11 +20,9 @@ createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <CartProvider>
           <QueryClientProvider client={queryClient}>
-
             <div className='max-w-screen-xl mx-auto'>
               <RouterProvider router={router} />
             </div>
-
           </QueryClientProvider>
         </CartProvider>
       </AuthProvider>

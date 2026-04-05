@@ -12,7 +12,7 @@ const Banner = () => {
             />
 
             <Link to="/shop" className="absolute bottom-12 right-6">
-                <button className="btn btn-primary">
+                <button className="btn glass text-yellow-400 font-bold">
                     View Products
                 </button>
             </Link>

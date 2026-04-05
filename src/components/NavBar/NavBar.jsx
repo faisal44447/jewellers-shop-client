@@ -34,7 +34,6 @@ const NavBar = () => {
                 <>
                     <li><NavLink to="/dashboard" className={navStyle}>Dashboard</NavLink></li>
                     <li><NavLink to="/products" className={navStyle}>All Products</NavLink></li>
-                    <li><NavLink to="/product-card-page" className={navStyle}>Shop</NavLink></li>
                     <li><NavLink to="/sales" className={navStyle}>Sales</NavLink></li>
                 </>
             )}
@@ -69,7 +68,7 @@ const NavBar = () => {
                 {/* LOGO */}
                 <Link to="/" className="btn btn-ghost text-xl">
                     <img
-                        className="w-[70px] rounded-xl"
+                        className="w-[70px] rounded-xl -mt-[7px]"
                         src={shopLogo}
                         alt="Shop Logo"
                     />
@@ -88,10 +87,10 @@ const NavBar = () => {
 
                 {user && (
                     <Link to="/cart" className="btn btn-ghost relative">
-                        <FaShoppingCart size={20} />
+                        <FaShoppingCart size={15} />
 
                         {/* CART COUNT */}
-                        <span className="absolute -top-1 -right-2 badge badge-error text-white">
+                        <span className="absolute -top-1 -right-1 badge badge-error text-white w-[10px]">
                             {cart.length}
                         </span>
                     </Link>

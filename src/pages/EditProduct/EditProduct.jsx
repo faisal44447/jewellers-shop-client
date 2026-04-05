@@ -10,7 +10,7 @@ const EditProduct = () => {
 
     // ✅ LOAD PRODUCT
     useEffect(() => {
-        axios.get(`http://localhost:5000/products/${id}`)
+        axios.get(`https://jewellers-shop-server.vercel.app/products/${id}`)
             .then(res => setProduct(res.data))
             .catch(err => console.log(err));
     }, [id]);
@@ -26,7 +26,7 @@ const EditProduct = () => {
     const handleUpdate = (e) => {
         e.preventDefault();
 
-        axios.patch(`http://localhost:5000/products/${id}`, {
+        axios.patch(`https://jewellers-shop-server.vercel.app/products/${id}`, {
             name: product.name,
             karat: product.karat,
 

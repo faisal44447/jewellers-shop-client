@@ -20,7 +20,7 @@ const Expenses = () => {
         // 🔥 date + time combine
         const fullDateTime = new Date(`${form.date}T${form.time}`);
 
-        axios.post("http://localhost:5000/expenses", {
+        axios.post("https://jewellers-shop-server.vercel.app/expenses", {
             ...form,
             amount: Number(form.amount),
             createdAt: fullDateTime

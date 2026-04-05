@@ -13,7 +13,7 @@ const HowladNewa = () => {
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost:5000/transactions", {
+            await axios.post("https://jewellers-shop-server.vercel.app/transactions", {
                 ...form,
                 amount: Number(form.amount),
                 createdAt: form.date ? new Date(form.date) : new Date()

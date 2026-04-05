@@ -35,7 +35,7 @@ const AuthProvider = ({ children }) => {
         // 🔥 LOGIN এর সাথে সাথে TOKEN নাও
         const user = result.user;
 
-        const res = await axios.post("http://localhost:5000/jwt", {
+        const res = await axios.post("https://jewellers-shop-server.vercel.app/jwt", {
             email: user.email
         });
 
@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
 
         const user = result.user;
 
-        const res = await axios.post("http://localhost:5000/jwt", {
+        const res = await axios.post("https://jewellers-shop-server.vercel.app/jwt", {
             email: user.email
         });
 

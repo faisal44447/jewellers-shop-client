@@ -7,7 +7,7 @@ const ExpenseList = () => {
     const [list, setList] = useState([]);
 
     const fetchExpenses = async () => {
-        const res = await axios.get("http://localhost:5000/expenses");
+        const res = await axios.get("https://jewellers-shop-server.vercel.app/expenses");
         setList(res.data);
     };
 
@@ -27,7 +27,7 @@ const ExpenseList = () => {
         });
 
         if (confirm.isConfirmed) {
-            await axios.delete(`http://localhost:5000/expenses/${id}`);
+            await axios.delete(`https://jewellers-shop-server.vercel.app/expenses/${id}`);
 
             await Swal.fire({
                 title: "Deleted!",
@@ -67,7 +67,7 @@ const ExpenseList = () => {
 
         if (formValues) {
             await axios.patch(
-                `http://localhost:5000/expenses/${item._id}`,
+                `https://jewellers-shop-server.vercel.app/expenses/${item._id}`,
                 formValues
             );
 

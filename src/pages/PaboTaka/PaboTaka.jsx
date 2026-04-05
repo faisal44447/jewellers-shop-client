@@ -11,7 +11,7 @@ const PaboTaka = () => {
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost:5000/receivables", {
+            await axios.post("https://jewellers-shop-server.vercel.app/receivables", {
                 ...form,
                 amount: Number(form.amount)
             });

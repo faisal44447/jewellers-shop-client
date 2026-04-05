@@ -95,7 +95,7 @@ const Products = () => {
 
                                     {/* WEIGHT */}
                                     <td>
-                                        {item.vori}v {item.ana}a {item.rati}r {item.point}p
+                                        {item.vori}ভরি {item.ana}আনা {item.rati}রতি {item.point}পয়েন্ট
                                     </td>
 
                                     {/* BUY */}

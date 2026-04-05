@@ -1,55 +1,60 @@
 import { FaGoogle } from "react-icons/fa";
-import useAuth from "../../hooks/useAuth";
-import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import useAuth from '../../hooks/useAuth';
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const SocialLogin = () => {
     const { googleSignIn } = useAuth();
     const axiosPublic = useAxiosPublic();
     const navigate = useNavigate();
 
-    const handleGoogleSignIn = () => {
-        googleSignIn()
-            .then(result => {
-                console.log(result.user);
+    const handleGoogleSignIn = async () => {
+        try {
+            const result = await googleSignIn();
+            const user = result.user;
+            console.log(user);
 
-                const userInfo = {
-                    email: result.user?.email,
-                    name: result.user?.displayName
-                };
+            const userInfo = {
+                email: user?.email,
+                name: user?.displayName
+            };
 
-                // ✅ 1. Save user in DB
-                axiosPublic.post('/users', userInfo)
-                    .then(() => {
+            // ✅ Save user to DB
+            await axiosPublic.post('/users', userInfo);
 
-                        // ✅ 2. Get JWT token
-                        axiosPublic.post('/jwt', { email: userInfo.email })
-                            .then(res => {
-                                console.log("TOKEN:", res.data.token);
+            // ✅ Get JWT token
+            const tokenRes = await axiosPublic.post('/jwt', { email: userInfo.email });
+            const token = tokenRes.data.token;
 
-                                // ✅ 3. Save token
-                                localStorage.setItem("access-token", res.data.token);
+            // ✅ Save token
+            localStorage.setItem("access-token", token);
 
-                                // ✅ 4. Redirect
-                                navigate('/');
-                            })
-                            .catch(err => console.log("JWT Error:", err));
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Login successful via Google!',
+                showConfirmButton: false,
+                timer: 1500
+            });
 
-                    })
-                    .catch(err => console.log("User Save Error:", err));
-            })
-            .catch(err => console.log("Google Login Error:", err));
+            // ✅ Redirect
+            navigate('/');
+        } catch (error) {
+            console.error("Social Login Error:", error);
+            Swal.fire("Error!", error.message || "Google login failed", "error");
+        }
     };
 
     return (
         <div className="p-8">
-            <div className="divider"></div>
+            <div className="divider">Or continue with</div>
 
             <button
                 onClick={handleGoogleSignIn}
-                className="btn w-full"
+                className="btn w-full btn-outline flex items-center justify-center gap-2"
             >
-                <FaGoogle className="mr-2" />
+                <FaGoogle />
                 Google Login
             </button>
         </div>

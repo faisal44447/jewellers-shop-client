@@ -14,7 +14,7 @@ const Cart = () => {
     const handleSell = async () => {
         try {
             for (const item of cart) {
-                await axios.post("http://localhost:5000/sell", item);
+                await axios.post("https://jewellers-shop-server.vercel.app/sell", item);
             }
 
             clearCart();
