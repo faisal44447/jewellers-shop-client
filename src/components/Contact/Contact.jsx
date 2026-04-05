@@ -37,8 +37,8 @@ const Contact = () => {
                     </a>
                 </div>
 
-                <p className='text-gray-400 text-lg'>
-                    Available 24/7 for your support
+                <p className='text-gray-400 text-lg font-bold'>
+                    ২৪ ঘণ্টা, ৭ দিন আপনার সাপোর্টের জন্য উপস্থিত আছি
                 </p>
 
             </div>

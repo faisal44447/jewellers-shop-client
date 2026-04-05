@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaShoppingCart } from 'react-icons/fa';
 import { CartContext } from "../../providers/CartProvider";
@@ -10,6 +10,12 @@ const NavBar = () => {
     const { user, logOut } = useContext(AuthContext);
     const { cart } = useContext(CartContext);
 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
     const handleLogOut = () => {
         logOut()
             .then(() => {
@@ -20,7 +26,6 @@ const NavBar = () => {
 
     const isAdmin = user && user.email === "md9897653@gmail.com";
 
-    // ✅ Active style
     const navStyle = ({ isActive }) =>
         isActive
             ? "text-primary font-bold border-b-2 border-primary"
@@ -29,7 +34,6 @@ const NavBar = () => {
     const navOption = (
         <>
             <li><NavLink to="/" className={navStyle}>Home</NavLink></li>
-
             {user && (
                 <>
                     <li><NavLink to="/dashboard" className={navStyle}>Dashboard</NavLink></li>
@@ -37,38 +41,47 @@ const NavBar = () => {
                     <li><NavLink to="/sales" className={navStyle}>Sales</NavLink></li>
                 </>
             )}
-
             {isAdmin && (
-                <li>
-                    <NavLink to="/manage-product" className={navStyle}>
-                        Manage Product
-                    </NavLink>
-                </li>
+                <li><NavLink to="/manage-product" className={navStyle}>Manage Product</NavLink></li>
             )}
         </>
     );
 
     return (
-        <div className="fixed top-0 left-0 w-full z-50 navbar shadow-md px-4">
+        <div className="navbar bg-base-100 shadow-md px-4 fixed top-0 left-0 w-full z-50">
 
             {/* LEFT */}
             <div className="navbar-start">
-
                 {/* MOBILE MENU */}
-                <div className="dropdown">
-                    <div tabIndex={0} className="btn btn-ghost lg:hidden">
-                        ☰
-                    </div>
+                <div className="dropdown relative">
+                    {/* BUTTON TO TOGGLE */}
+                    <button
+                        onClick={toggleDropdown}
+                        className="btn btn-ghost btn-circle lg:hidden"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
 
-                    <ul className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                        {navOption}
-                    </ul>
+                    {/* DROPDOWN MENU */}
+                    {isDropdownOpen && (
+                        <ul className="menu dropdown-content bg-base-100 rounded-box z-[50] mt-3 w-52 p-2 shadow absolute">
+                            {navOption}
+                        </ul>
+                    )}
                 </div>
 
                 {/* LOGO */}
-                <Link to="/" className="btn btn-ghost text-xl">
+                <Link to="/" className="btn btn-ghost text-xl ml-2">
                     <img
-                        className="w-[70px] rounded-xl -mt-[7px]"
+                        className="w-[120px] rounded-xl"
                         src={shopLogo}
                         alt="Shop Logo"
                     />
@@ -84,13 +97,10 @@ const NavBar = () => {
 
             {/* RIGHT */}
             <div className="navbar-end flex items-center gap-3">
-
                 {user && (
-                    <Link to="/cart" className="btn btn-ghost relative">
-                        <FaShoppingCart size={15} />
-
-                        {/* CART COUNT */}
-                        <span className="absolute -top-1 -right-1 badge badge-error text-white w-[10px]">
+                    <Link to="/cart" className="btn btn-ghost btn-circle relative">
+                        <FaShoppingCart size={18} />
+                        <span className="badge badge-xs badge-error indicator-item">
                             {cart.length}
                         </span>
                     </Link>
@@ -98,8 +108,6 @@ const NavBar = () => {
 
                 {user ? (
                     <div className="flex items-center gap-2">
-
-                        {/* USER IMAGE */}
                         <div className="tooltip tooltip-bottom" data-tip={user?.displayName}>
                             <img
                                 src={user?.photoURL || "https://i.ibb.co/4pDNDk1/avatar.png"}
@@ -107,13 +115,16 @@ const NavBar = () => {
                                 className="w-10 h-10 rounded-full border-2 border-primary"
                             />
                         </div>
-
-                        {/* LOGOUT */}
-                        <button
-                            onClick={handleLogOut}
-                            className="btn btn-error btn-sm"
-                        >
-                            Logout
+                        <button onClick={handleLogOut} className="btn btn-error btn-sm btn-circle">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                            </svg>
                         </button>
                     </div>
                 ) : (

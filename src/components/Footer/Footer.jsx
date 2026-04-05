@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ShopLogo from "../../assets/shopLogo.JPG";
+import footerLogo from "../../assets/footerLogo.JPG";
 import "./Footer.css";
 import { FaTwitter, FaFacebookF } from "react-icons/fa";
 import { FiYoutube } from "react-icons/fi";
@@ -12,8 +12,8 @@ const Footer = () => {
                 <aside>
                     <Link to='/'>
                         <img
-                            src={ShopLogo}
-                            alt="Shop Logo"
+                            src={footerLogo}
+                            alt="Footer Logo"
                             className="w-[150px] rounded-xl border-2 border-yellow-500"
                         />
                     </Link>
