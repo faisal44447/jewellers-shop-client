@@ -4,24 +4,17 @@ import ShopBanner from "../../assets/Shop Banner.jpg";
 const Banner = () => {
     return (
         <div className="w-full max-w-5xl mx-auto mt-5 relative rounded-2xl overflow-hidden shadow-2xl">
-
-            {/* Banner Image */}
             <img
-                className="w-full h-72 md:h-96 object-cover"
+                className="w-full h-auto object-cover"
                 src={ShopBanner}
                 alt="Shop Banner"
             />
-
-            {/* Button */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-30"></div>
             <Link to="/product-card-page">
-                <button className="absolute bottom-6 right-6 md:bottom-12 md:right-12 btn glass text-yellow-400 font-bold shadow-lg hover:scale-105 transition-transform duration-300">
+                <button className="absolute bottom-4 right-4 md:bottom-8 md:right-8 btn glass text-yellow-400 font-bold shadow-lg hover:scale-105 transition-transform duration-300">
                     View Products
                 </button>
             </Link>
-
-            {/* Optional overlay gradient for better text/button visibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-30"></div>
-
         </div>
     );
 };

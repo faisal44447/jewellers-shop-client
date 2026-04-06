@@ -1,10 +1,12 @@
 import { useContext } from "react";
 import { CartContext } from "../../providers/CartProvider";
 import Swal from "sweetalert2";
-import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Cart = () => {
     const { cart, removeFromCart, clearCart } = useContext(CartContext);
+    const axiosSecure = useAxiosSecure(); // 👈 ADD THIS
+
 
     const handleRemove = (id) => {
         removeFromCart(id);
@@ -14,12 +16,10 @@ const Cart = () => {
     const handleSell = async () => {
         try {
             for (const item of cart) {
-                await axios.post("https://jewellers-shop-server.vercel.app/sell", item);
+                await axiosSecure.post("/sell", item); // 👈 FIXED
             }
-
             clearCart();
             localStorage.removeItem("cart");
-
             Swal.fire("Success!", "Sale Completed", "success");
         } catch {
             Swal.fire("Error!", "Something went wrong", "error");

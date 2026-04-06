@@ -9,29 +9,22 @@ import shopLogo from "../../assets/shopLogo.jpg";
 const NavBar = () => {
     const { user, logOut } = useContext(AuthContext);
     const { cart } = useContext(CartContext);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-    const toggleDropdown = () => {
-        setIsDropdownOpen(!isDropdownOpen);
-    };
+    const isAdmin = user && user.email === "md9897653@gmail.com";
 
     const handleLogOut = () => {
         logOut()
-            .then(() => {
-                Swal.fire("Logged out!", "", "success");
-            })
-            .catch(error => console.log(error));
+            .then(() => Swal.fire("Logged out!", "", "success"))
+            .catch(err => console.log(err));
     };
-
-    const isAdmin = user && user.email === "md9897653@gmail.com";
 
     const navStyle = ({ isActive }) =>
         isActive
             ? "text-primary font-bold border-b-2 border-primary"
             : "hover:text-primary";
 
-    const navOption = (
+    const navOptions = (
         <>
             <li><NavLink to="/" className={navStyle}>Home</NavLink></li>
             {user && (
@@ -41,97 +34,107 @@ const NavBar = () => {
                     <li><NavLink to="/sales" className={navStyle}>Sales</NavLink></li>
                 </>
             )}
-            {isAdmin && (
+            {user && isAdmin && (
                 <li><NavLink to="/manage-product" className={navStyle}>Manage Product</NavLink></li>
             )}
         </>
     );
 
     return (
-        <div className="navbar bg-base-100 shadow-md px-4 fixed top-0 left-0 w-full z-50">
+        <div className="navbar fixed z-10 bg-opacity-80 bg-base-100 shadow-md px-4 max-w-screen-xl -top-[10px] mx-auto">
 
             {/* LEFT */}
             <div className="navbar-start">
+
                 {/* MOBILE MENU */}
-                <div className="dropdown relative">
-                    {/* BUTTON TO TOGGLE */}
-                    <button
-                        onClick={toggleDropdown}
-                        className="btn btn-ghost btn-circle lg:hidden"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
+                <div className="dropdown">
+                    <label tabIndex={0} className="btn btn-ghost lg:hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg"
                             className="h-5 w-5"
                             fill="none"
                             viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                            stroke="currentColor">
+                            <path strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
-                    </button>
-
-                    {/* DROPDOWN MENU */}
-                    {isDropdownOpen && (
-                        <ul className="menu dropdown-content bg-base-100 rounded-box z-[50] mt-3 w-52 p-2 shadow absolute">
-                            {navOption}
-                        </ul>
-                    )}
+                    </label>
+                    <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+                        {navOptions}
+                        {!user && <li><NavLink to="/login" className={navStyle}>Login</NavLink></li>}
+                        {user && (
+                            <>
+                                <li>
+                                    <Link to="/cart" className="btn btn-ghost w-full text-left">
+                                        Cart ({cart.length})
+                                    </Link>
+                                </li>
+                                <li>
+                                    <button onClick={handleLogOut} className="btn btn-ghost w-full text-left">Logout</button>
+                                </li>
+                            </>
+                        )}
+                    </ul>
                 </div>
 
                 {/* LOGO */}
-                <Link to="/" className="btn btn-ghost text-xl ml-2">
-                    <img
-                        className="w-[120px] rounded-xl"
-                        src={shopLogo}
-                        alt="Shop Logo"
-                    />
+                <Link to="/" className=" text-xl">
+                    <img src={shopLogo} alt="logo" className="w-[80px] rounded-xl" />
                 </Link>
             </div>
 
             {/* CENTER */}
             <div className="navbar-center hidden lg:flex">
-                <ul className="menu menu-horizontal gap-5">
-                    {navOption}
+                <ul className="menu menu-horizontal px-1 gap-4 text-yellow-600 fond-bold">
+                    {navOptions}
                 </ul>
             </div>
 
             {/* RIGHT */}
             <div className="navbar-end flex items-center gap-3">
-                {user && (
-                    <Link to="/cart" className="btn btn-ghost btn-circle relative">
-                        <FaShoppingCart size={18} />
-                        <span className="badge badge-xs badge-error indicator-item">
-                            {cart.length}
-                        </span>
-                    </Link>
+
+                {/* Login button if no user */}
+                {!user && (
+                    <NavLink to="/login" className="btn btn-ghost text-yellow-600 fond-bold">
+                        Login
+                    </NavLink>
                 )}
 
-                {user ? (
-                    <div className="flex items-center gap-2">
-                        <div className="tooltip tooltip-bottom" data-tip={user?.displayName}>
+                {/* User logged in */}
+                {user && (
+                    <div className="flex items-center gap-2 relative">
+
+                        {/* Cart button */}
+                        <Link to="/cart" className="relative">
+                            <button className="btn btn-ghost relative">
+                                <FaShoppingCart className="mr-2" />
+                                <span className="badge font-bold text-lg text-yellow-500 absolute  -right-2">
+                                    {cart.length}
+                                </span>
+                            </button>
+                        </Link>
+
+                        {/* Logout button */}
+                        <button onClick={handleLogOut} className="btn btn-ghost text-yellow-600 fond-bold">
+                            Logout
+                        </button>
+
+                        {/* User Image + Hover Name */}
+                        <div className="relative group">
                             <img
                                 src={user?.photoURL || "https://i.ibb.co/4pDNDk1/avatar.png"}
                                 alt="user"
-                                className="w-10 h-10 rounded-full border-2 border-primary"
+                                className="w-10 h-10 rounded-full border cursor-pointer"
                             />
+                            <div className="absolute top-10 left-1/2 transform -translate-x-1/2 hidden group-hover:block bg-black text-white text-sm px-3 py-1 rounded shadow">
+                                {user?.displayName || "User"}
+                            </div>
                         </div>
-                        <button onClick={handleLogOut} className="btn btn-error btn-sm btn-circle">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7" />
-                            </svg>
-                        </button>
+
                     </div>
-                ) : (
-                    <Link to="/login" className="btn btn-primary btn-sm">
-                        Login
-                    </Link>
                 )}
+
             </div>
         </div>
     );
