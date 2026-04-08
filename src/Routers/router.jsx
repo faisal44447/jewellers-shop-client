@@ -24,6 +24,7 @@ import PaboTakaList from "../pages/PaboTaka/PaboTakaList";
 import ExpenseList from "../pages/ExpenseList/ExpenseList";
 import HowladList from "../pages/HowladNewa/HowladList";
 import Sales from "../pages/Sales/Sales";
+import ExpensesDetailsToDo from "../pages/Expenses/ExpensesDetailsToDo";
 
 const router = createBrowserRouter([
     {
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
             {
                 path: "/expenses-list",
                 element: <ExpenseList />
+            },
+            {
+                path: "/expenses-details-todo",
+                element: <ExpensesDetailsToDo />
             },
             {
                 path: "/pabo-list",

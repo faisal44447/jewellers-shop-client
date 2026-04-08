@@ -13,23 +13,27 @@ const SocialLogin = () => {
         try {
             const result = await googleSignIn();
             const user = result.user;
-            console.log(user);
+            if (!user?.email) throw new Error("Google login failed. No email returned.");
 
             const userInfo = {
-                email: user?.email,
-                name: user?.displayName
+                email: user.email,
+                name: user.displayName || "Unknown"
             };
 
-            // ✅ Save user to DB
-            await axiosPublic.post('/users', userInfo);
+            // ✅ Save user to DB, handle duplicate gracefully
+            await axiosPublic.post('/users', userInfo).catch(err => {
+                console.warn("User may already exist:", err.response?.data?.message || err.message);
+            });
 
             // ✅ Get JWT token
             const tokenRes = await axiosPublic.post('/jwt', { email: userInfo.email });
             const token = tokenRes.data.token;
+            if (!token) throw new Error("Token not received from server");
 
-            // ✅ Save token
+            // ✅ Save token to localStorage
             localStorage.setItem("access-token", token);
 
+            // ✅ Notify user
             Swal.fire({
                 position: 'top-end',
                 icon: 'success',
@@ -52,9 +56,9 @@ const SocialLogin = () => {
 
             <button
                 onClick={handleGoogleSignIn}
-                className="btn w-full btn-outline flex items-center justify-center gap-2"
+                className="btn w-full btn-outline flex items-center justify-center gap-2 hover:bg-gray-100 transition"
             >
-                <FaGoogle />
+                <FaGoogle className="text-red-500" />
                 Google Login
             </button>
         </div>

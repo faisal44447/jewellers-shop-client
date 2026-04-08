@@ -14,7 +14,6 @@ const Sales = () => {
         fetchSales();
     }, []);
 
-    // ❌ DELETE
     const handleDelete = async (id) => {
         const confirm = await Swal.fire({
             title: "Delete this sale?",
@@ -27,7 +26,6 @@ const Sales = () => {
         if (confirm.isConfirmed) {
             try {
                 await axios.delete(`https://jewellers-shop-server.vercel.app/sales/${id}`);
-
                 Swal.fire("Deleted!", "Sale has been deleted.", "success");
                 fetchSales();
             } catch (err) {
@@ -37,7 +35,7 @@ const Sales = () => {
     };
 
     return (
-        <div className="p-6">
+        <div className="p-6 mt-10">
             <h2 className="text-4xl text-center font-bold mb-6">
                 {sales.length} Sold Products
             </h2>
@@ -45,12 +43,9 @@ const Sales = () => {
             {sales.length === 0 ? (
                 <p className="text-center text-gray-500">No sales found</p>
             ) : (
-                <div className="card grid grid-cols-1 md:grid-cols-3 gap-4 ">
-
+                <div className="card grid grid-cols-1 md:grid-cols-3 gap-4">
                     {sales.map(item => (
                         <div key={item._id} className="card bg-base-100 shadow-xl">
-
-                            {/* IMAGE */}
                             <figure className="px-5 pt-5">
                                 <img
                                     src={item.image || "https://picsum.photos/200"}
@@ -59,42 +54,30 @@ const Sales = () => {
                                 />
                             </figure>
 
-                            {/* BODY */}
                             <div className="card-body text-center">
+                                <h2 className="font-bold text-lg">{item.name}</h2>
 
-                                <h2 className="font-bold text-lg">
-                                    {item.name}
-                                </h2>
-
-                                {/* PRICE */}
                                 <p className="text-lg font-bold text-green-600">
                                     ৳ {item.sellPrice}
                                 </p>
 
-                                {/* STATUS */}
                                 <p className="text-red-500 font-bold">
-                                    SOLD
+                                    {item.status === "sold" ? "SOLD" : "PENDING"}
                                 </p>
 
-                                {/* DATE */}
                                 <p className="text-sm text-gray-500">
-                                    {item.date
-                                        ? new Date(item.date).toLocaleString()
-                                        : "No Date"}
+                                    {item.date ? new Date(item.date).toLocaleString() : "No Date"}
                                 </p>
 
-                                {/* BUTTON */}
                                 <button
-                                    className="w-full btn btn-error btn-sm mt-2"
+                                    className="btn btn-error btn-sm mt-2"
                                     onClick={() => handleDelete(item._id)}
                                 >
                                     Delete
                                 </button>
-
                             </div>
                         </div>
                     ))}
-
                 </div>
             )}
         </div>

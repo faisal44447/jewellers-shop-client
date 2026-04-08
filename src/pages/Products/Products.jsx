@@ -51,7 +51,7 @@ const Products = () => {
     };
 
     return (
-        <div>
+        <div className="mt-10">
             {/* 🔥 TOP SUMMARY */}
             <div className="flex justify-evenly mb-8">
                 <h2 className="text-4xl text-center font-bold">All Products: {products.length}</h2>

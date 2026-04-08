@@ -98,10 +98,13 @@ const ManageProduct = () => {
     };
 
     return (
-        <div className="p-5">
+        <div className="p-5 mt-10">
+            <div className="mb-5">
+                <h2 className="text-3xl text-center font-bold">Manage Products</h2>
 
+            </div>
             {/* 🔥 TAB BUTTON */}
-            <div className="flex gap-3 mb-5">
+            <div className="flex gap-3 mb-5 flex-wrap">
                 <button
                     onClick={() => setTab("products")}
                     className={`btn ${tab === "products" ? "btn-primary" : ""}`}
@@ -115,19 +118,16 @@ const ManageProduct = () => {
                 >
                     💰 Pabo Taka
                 </button>
-                <button className="btn btn-info">
-                    <Link to="/expenses-list">
-                        📋 Expenses
-                    </Link>
-                </button>
+
+                <Link to="/expenses-list">
+                    <button className="btn btn-info">📋 Expenses</button>
+                </Link>
             </div>
 
             {/* ================= PRODUCTS TABLE ================= */}
             {tab === "products" && (
                 <>
                     <div className="flex justify-between mb-6 flex-wrap gap-3">
-                        <h2 className="text-3xl font-bold">Manage Products</h2>
-
                         <div className="flex gap-3 flex-wrap">
                             <Link to="/add-product">
                                 <button className="btn btn-primary">➕ Add Product</button>
@@ -140,10 +140,10 @@ const ManageProduct = () => {
                             <Link to="/paboTaka">
                                 <button className="btn btn-accent">➕ Pabo Tk</button>
                             </Link>
-                            <Link to="/expenses">
-                                <button className="btn btn-accent">➕Expenses</button>
-                            </Link>
 
+                            <Link to="/expenses">
+                                <button className="btn btn-accent">➕ Expenses</button>
+                            </Link>
                         </div>
                     </div>
 
@@ -184,22 +184,18 @@ const ManageProduct = () => {
 
                                         <td>
                                             <div className="flex gap-2">
-
-                                                {/* EDIT */}
                                                 <Link to={`/edit/${item._id}`}>
                                                     <button className="btn btn-warning btn-xs">
                                                         <FaEdit />
                                                     </button>
                                                 </Link>
 
-                                                {/* DELETE */}
                                                 <button
                                                     onClick={() => handleDeleteProduct(item)}
                                                     className="btn btn-error btn-xs"
                                                 >
                                                     <FaTrashAlt />
                                                 </button>
-
                                             </div>
                                         </td>
                                     </tr>
@@ -244,8 +240,6 @@ const ManageProduct = () => {
 
                                         <td>
                                             <div className="flex gap-2">
-
-                                                {/* EDIT */}
                                                 <button
                                                     onClick={() => handleEditPabo(item)}
                                                     className="btn btn-warning btn-xs"
@@ -253,25 +247,21 @@ const ManageProduct = () => {
                                                     <FaEdit />
                                                 </button>
 
-                                                {/* DELETE */}
                                                 <button
                                                     onClick={() => handleDeletePabo(item._id)}
                                                     className="btn btn-error btn-xs"
                                                 >
                                                     <FaTrashAlt />
                                                 </button>
-
                                             </div>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
-
                         </table>
                     </div>
                 </>
             )}
-
         </div>
     );
 };

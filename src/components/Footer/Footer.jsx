@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import footerLogo from "../../assets/footerLogo.JPG";
+import footerLogo from "../../assets/footerLogo.jpg";
 import "./Footer.css";
 import { FaTwitter, FaFacebookF } from "react-icons/fa";
 import { FiYoutube } from "react-icons/fi";

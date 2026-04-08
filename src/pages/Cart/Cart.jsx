@@ -2,26 +2,33 @@ import { useContext } from "react";
 import { CartContext } from "../../providers/CartProvider";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
     const { cart, removeFromCart, clearCart } = useContext(CartContext);
-    const axiosSecure = useAxiosSecure(); // 👈 ADD THIS
-
+    const axiosSecure = useAxiosSecure();
+    const navigate = useNavigate();
 
     const handleRemove = (id) => {
         removeFromCart(id);
         Swal.fire("Removed!", "Item removed", "success");
     };
 
-    const handleSell = async () => {
+    // ✅ Sell single item
+    const handleSellItem = async (item) => {
         try {
-            for (const item of cart) {
-                await axiosSecure.post("/sell", item); // 👈 FIXED
-            }
-            clearCart();
-            localStorage.removeItem("cart");
-            Swal.fire("Success!", "Sale Completed", "success");
-        } catch {
+            await axiosSecure.post("/sell", {
+                ...item,
+                status: "sold",
+                date: new Date(),
+            });
+
+            // remove that item from cart
+            removeFromCart(item._id);
+            Swal.fire("Success!", `${item.name} sold successfully`, "success").then(() => {
+                navigate("/sales");
+            });
+        } catch (err) {
             Swal.fire("Error!", "Something went wrong", "error");
         }
     };
@@ -41,7 +48,6 @@ const Cart = () => {
                             <div key={item._id} className="card bg-base-100 shadow-xl">
 
                                 <figure className="px-5 pt-5">
-                                    {/* ✅ FIXED IMAGE */}
                                     <img
                                         src={item.image || "https://picsum.photos/200"}
                                         alt={item.name}
@@ -56,14 +62,21 @@ const Cart = () => {
                                         ৳{item.sellPrice || item.buyPrice || 0}
                                     </p>
 
-                                    {/* ✅ ADD THIS */}
                                     <p className="text-green-600 font-bold">
                                         {item.status === "sold" ? "SOLD" : "IN CART"}
                                     </p>
 
                                     <button
+                                        onClick={() => handleSellItem(item)} // ✅ pass single item
+                                        className="btn btn-success w-full mt-4"
+                                        disabled={item.status === "sold"} // optional: disable if sold
+                                    >
+                                        ✅ Confirm Sell
+                                    </button>
+
+                                    <button
                                         onClick={() => handleRemove(item._id)}
-                                        className="btn btn-error btn-sm mt-2"
+                                        className="btn btn-error w-full mt-2"
                                     >
                                         Remove
                                     </button>
@@ -72,13 +85,9 @@ const Cart = () => {
                         ))}
                     </div>
 
-                    <h3 className="mt-6 text-xl font-bold text-center">
+                    <h3 className="mt-6 btn w-full text-xl font-bold text-center">
                         Total: {total} ৳
                     </h3>
-
-                    <button onClick={handleSell} className="btn btn-success w-full mt-4">
-                        ✅ Confirm Sell
-                    </button>
                 </>
             )}
         </div>

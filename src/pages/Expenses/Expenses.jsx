@@ -40,7 +40,7 @@ const Expenses = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-5 space-y-3">
+        <form onSubmit={handleSubmit} className="p-5 mt-10 space-y-3">
 
             <input
                 name="title"

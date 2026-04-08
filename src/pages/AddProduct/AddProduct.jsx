@@ -5,9 +5,7 @@ import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
-
-const image_hosting_api =
-    `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
+const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 const AddProduct = () => {
     const { register, handleSubmit, reset } = useForm();
@@ -19,17 +17,14 @@ const AddProduct = () => {
             // ✅ combine date + time
             const fullDateTime = new Date(`${data.date}T${data.time}`);
 
-            // 🔥 image upload
-            const imageFile = { image: data.image[0] };
+            // 🔥 Image Upload using FormData
+            const formData = new FormData();
+            formData.append("image", data.image[0]);
 
-            const res = await axiosPublic.post(image_hosting_api, imageFile, {
-                headers: {
-                    "content-type": "multipart/form-data"
-                }
-            });
+            const res = await axiosPublic.post(image_hosting_api, formData);
 
             if (res.data.success) {
-
+                // Prepare product data
                 const productData = {
                     name: data.name,
                     karat: data.karat,
@@ -39,17 +34,14 @@ const AddProduct = () => {
                     point: Number(data.point || 0),
                     buyPrice: Number(data.buyPrice || 0),
                     image: res.data.data.display_url,
-
-                    // ✅ NEW FIELD
-                    createdAt: fullDateTime
+                    createdAt: fullDateTime // ✅ use frontend date + time
                 };
 
+                // Send to backend
                 const productRes = await axiosSecure.post("/products", productData);
 
-                if (productRes.data.insertedId) {
+                if (productRes.data.success) {
                     reset();
-
-                    // 🔥 সুন্দর SweetAlert
                     Swal.fire({
                         icon: "success",
                         title: "✅ Product Added!",
@@ -58,11 +50,12 @@ const AddProduct = () => {
                         timer: 1500
                     });
                 }
+            } else {
+                throw new Error("Image upload failed");
             }
 
         } catch (error) {
-            console.log(error);
-
+            console.error(error);
             Swal.fire({
                 icon: "error",
                 title: "❌ Error",
@@ -73,7 +66,7 @@ const AddProduct = () => {
 
     return (
         <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold text-center my-6">➕ Add Product</h2>
+            <h2 className="text-2xl mt-10 font-bold text-center my-6">➕ Add Product</h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
@@ -91,7 +84,7 @@ const AddProduct = () => {
                     className="input input-bordered w-full"
                 />
 
-                {/* VORI */}
+                {/* VORI, ANA, RATI, POINT */}
                 <div className="grid grid-cols-4 gap-2">
                     <input {...register("vori")} placeholder="Vori" className="input input-bordered" />
                     <input {...register("ana")} placeholder="Ana" className="input input-bordered" />
@@ -99,7 +92,7 @@ const AddProduct = () => {
                     <input {...register("point")} placeholder="Point" className="input input-bordered" />
                 </div>
 
-                {/* Price */}
+                {/* Buy Price */}
                 <input
                     type="number"
                     {...register("buyPrice", { required: true })}
@@ -107,19 +100,19 @@ const AddProduct = () => {
                     className="input input-bordered w-full"
                 />
 
-                {/* ✅ DATE */}
-                <input
-                    type="date"
-                    {...register("date", { required: true })}
-                    className="input input-bordered w-full"
-                />
-
-                {/* ✅ TIME */}
-                <input
-                    type="time"
-                    {...register("time", { required: true })}
-                    className="input input-bordered w-full"
-                />
+                {/* Date + Time */}
+                <div className="flex justify-between">
+                    <input
+                        type="date"
+                        {...register("date", { required: true })}
+                        className="input input-bordered w-full"
+                    />
+                    <input
+                        type="time"
+                        {...register("time", { required: true })}
+                        className="input input-bordered w-full"
+                    />
+                </div>
 
                 {/* Image */}
                 <input

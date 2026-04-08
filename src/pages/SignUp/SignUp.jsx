@@ -5,7 +5,8 @@ import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useForm } from 'react-hook-form';
 import { AuthContext } from "../../providers/AuthProvider";
 import SocialLogin from "../../components/SocialLogin/SocialLogin";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // password icon
 
 const SignUp = () => {
     const axiosPublic = useAxiosPublic();
@@ -13,19 +14,27 @@ const SignUp = () => {
     const { createUser, updateUserProfile } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    const [showPassword, setShowPassword] = useState(false); // password toggle
+
     const onSubmit = async (data) => {
         try {
+            // 1️⃣ Create User
             const result = await createUser(data.email, data.password);
-            const user = result.user;
 
+            // 2️⃣ Update Profile
             await updateUserProfile(data.name, data.photoURL);
 
-            // database এ user info পাঠানো
+            // 3️⃣ Save user info in database
             const userInfo = { name: data.name, email: data.email };
             const res = await axiosPublic.post('/users', userInfo);
 
-            if (res.data.insertedId) {
+            if (res.data.success) {
+                // 4️⃣ Get JWT Token
+                const tokenRes = await axiosPublic.post('/jwt', { email: data.email });
+                localStorage.setItem("access-token", tokenRes.data.token);
+
                 reset();
+
                 Swal.fire({
                     position: 'top-end',
                     icon: 'success',
@@ -33,6 +42,7 @@ const SignUp = () => {
                     showConfirmButton: false,
                     timer: 1500
                 });
+
                 navigate('/');
             }
         } catch (error) {
@@ -83,17 +93,26 @@ const SignUp = () => {
                             />
                             {errors.email && <p className="text-red-600">Email is required</p>}
 
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                className="input input-bordered w-full"
-                                {...register("password", {
-                                    required: true,
-                                    minLength: 6,
-                                    maxLength: 20,
-                                    pattern: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/
-                                })}
-                            />
+                            {/* Password with toggle */}
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Password"
+                                    className="input input-bordered w-full"
+                                    {...register("password", {
+                                        required: true,
+                                        minLength: 6,
+                                        maxLength: 20,
+                                        pattern: /(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/
+                                    })}
+                                />
+                                <span
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-xl text-gray-500"
+                                >
+                                    {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                                </span>
+                            </div>
                             {errors.password?.type === 'required' && <p className="text-red-600">Password is required</p>}
                             {errors.password?.type === 'minLength' && <p className="text-red-600">Password must be at least 6 characters</p>}
                             {errors.password?.type === 'maxLength' && <p className="text-red-600">Password must be less than 20 characters</p>}

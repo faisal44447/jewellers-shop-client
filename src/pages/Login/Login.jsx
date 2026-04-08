@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AuthContext } from '../../providers/AuthProvider';
 import SocialLogin from '../../components/SocialLogin/SocialLogin';
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // password toggle icon
 
 const generateCaptcha = () => Math.floor(1000 + Math.random() * 9000);
 
@@ -15,14 +16,10 @@ const Login = () => {
     const [captcha, setCaptcha] = useState(generateCaptcha());
     const [input, setInput] = useState("");
     const [disabled, setDisabled] = useState(true);
+    const [showPassword, setShowPassword] = useState(false); // password toggle
 
     useEffect(() => {
-        // captcha input এর মান পরিবর্তন হলে button enable/disable
-        if (input === String(captcha)) {
-            setDisabled(false);
-        } else {
-            setDisabled(true);
-        }
+        setDisabled(input !== String(captcha));
     }, [input, captcha]);
 
     const handleLogin = async (e) => {
@@ -42,7 +39,7 @@ const Login = () => {
             const result = await signIn(email, password);
             const user = result.user;
 
-            // backend থেকে token
+            // backend থেকে JWT token
             const res = await fetch("https://jewellers-shop-server.vercel.app/jwt", {
                 method: "POST",
                 headers: { "content-type": "application/json" },
@@ -71,8 +68,25 @@ const Login = () => {
                 <div className="card md:w-1/2 max-w-sm shadow-2xl bg-base-100 p-5">
                     <form onSubmit={handleLogin} className="card-body space-y-3">
                         <input type="email" name="email" placeholder="Email" className="input input-bordered w-full" required />
-                        <input type="password" name="password" placeholder="Password" className="input input-bordered w-full" required />
 
+                        {/* Password with toggle */}
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                placeholder="Password"
+                                className="input input-bordered w-full"
+                                required
+                            />
+                            <span
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-xl text-gray-500"
+                            >
+                                {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+                            </span>
+                        </div>
+
+                        {/* Captcha */}
                         <div>
                             <p className="font-bold">Captcha: {captcha}</p>
                             <input

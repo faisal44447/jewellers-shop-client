@@ -4,7 +4,7 @@ import { FaShoppingCart } from 'react-icons/fa';
 import { CartContext } from "../../providers/CartProvider";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
-import shopLogo from "../../assets/shopLogo.jpg";
+import LainvinJewellersLogo from "../../assets/Laivin Jewellers Logo.png";
 
 const NavBar = () => {
     const { user, logOut } = useContext(AuthContext);
@@ -32,7 +32,7 @@ const NavBar = () => {
                     <li><NavLink to="/dashboard" className={navStyle}>Dashboard</NavLink></li>
                     <li><NavLink to="/products" className={navStyle}>All Products</NavLink></li>
                     <li><NavLink to="/sales" className={navStyle}>Sales</NavLink></li>
-                </>
+                    <li><NavLink to="/expenses-details-todo" className={navStyle}>Expenses Details</NavLink></li>                </>
             )}
             {user && isAdmin && (
                 <li><NavLink to="/manage-product" className={navStyle}>Manage Product</NavLink></li>
@@ -41,7 +41,7 @@ const NavBar = () => {
     );
 
     return (
-        <div className="navbar fixed z-10 bg-opacity-80 bg-base-100 shadow-md px-4 max-w-screen-xl -top-[10px] mx-auto">
+        <div className="navbar glass fixed z-10 -mt-5 shadow-md px-4 max-w-screen-xl mx-auto">
 
             {/* LEFT */}
             <div className="navbar-start">
@@ -80,7 +80,7 @@ const NavBar = () => {
 
                 {/* LOGO */}
                 <Link to="/" className=" text-xl">
-                    <img src={shopLogo} alt="logo" className="w-[80px] rounded-xl" />
+                    <img src={LainvinJewellersLogo} alt="logo" className="w-[60px] rounded-xl" />
                 </Link>
             </div>
 

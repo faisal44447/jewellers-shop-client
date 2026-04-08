@@ -3,7 +3,7 @@ import ShopBanner from "../../assets/Shop Banner.jpg";
 
 const Banner = () => {
     return (
-        <div className="w-full max-w-5xl mx-auto mt-5 relative rounded-2xl overflow-hidden shadow-2xl">
+        <div className="w-full max-w-5xl mx-auto mt-[60px] relative rounded-2xl overflow-hidden shadow-2xl">
             <img
                 className="w-full h-auto object-cover"
                 src={ShopBanner}

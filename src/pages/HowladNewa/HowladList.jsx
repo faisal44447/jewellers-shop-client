@@ -39,9 +39,39 @@ const HowladList = () => {
                                     ? "➕ Howlad Nise"
                                     : "➖ Howlad Dise"}
                             </td>
-                            <td>৳ {item.amount}</td>
+                            <td
+                                className={`font-bold ${item.type === "loan" ? "text-green-600" : "text-red-500"
+                                    }`}
+                            >
+                                {item.type === "loan" ? "+" : "-"}৳ {item.amount}                            </td>
                             <td>
-                                {new Date(item.createdAt).toLocaleString()}
+                                {item.createdAt
+                                    ? (() => {
+                                        const d = new Date(item.createdAt);
+                                        const day = d.getDate().toString().padStart(2, "0");
+                                        const month = (d.getMonth() + 1).toString().padStart(2, "0");
+                                        const year = d.getFullYear();
+
+                                        let hours = d.getHours();
+                                        const minutes = d.getMinutes().toString().padStart(2, "0");
+                                        const ampm = hours >= 12 ? "PM" : "AM";
+                                        hours = hours % 12 || 12; // 0 হলে 12
+
+                                        return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
+                                    })()
+                                    : item.date
+                                        ? (() => {
+                                            const d = new Date(item.date);
+                                            const day = d.getDate().toString().padStart(2, "0");
+                                            const month = (d.getMonth() + 1).toString().padStart(2, "0");
+                                            const year = d.getFullYear();
+                                            let hours = d.getHours();
+                                            const minutes = d.getMinutes().toString().padStart(2, "0");
+                                            const ampm = hours >= 12 ? "PM" : "AM";
+                                            hours = hours % 12 || 12;
+                                            return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
+                                        })()
+                                        : "No Date"}
                             </td>
                         </tr>
                     ))}
